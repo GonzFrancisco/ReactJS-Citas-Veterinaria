@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
 import uuid from 'uuid';
 
+const initialState = {
+    cita: {
+        mascota: '',
+        propietario: '',
+        fecha: '',
+        hora: '',
+        sintomas: ''
+    },
+    error: true
+}
+
 class NuevaCita extends Component {
     constructor(props) {
-        super(props)
+        super(props);
     
-        this.state = {
-             cita: {
-                 mascota: '',
-                 propietario: '',
-                 fecha: '',
-                 hora: '',
-                 sintomas: ''
-             },
-             error: false
-        }
+        this.state = { ...initialState };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChane = e => {
+    handleChange = e => {
         let _this = e.target;
         this.setState({
             cita: {
@@ -36,15 +40,16 @@ class NuevaCita extends Component {
 
         // validate fields
         if(
-            mascota !== '' &&
-            propietario !== '' &&
-            fecha !== '' &&
-            hora !== '' &&
-            sintomas !== ''
+            mascota === '' &&
+            propietario === '' &&
+            fecha === '' &&
+            hora === '' &&
+            sintomas === ''
           ){
             this.setState({
-                error: true
+                error: false
             });
+          }else{
 
             const nuevaCita = {
                 ...this.state.cita,
@@ -52,7 +57,13 @@ class NuevaCita extends Component {
             }
 
             // Add cita
-            this.props.addCita(nuevaCita);                        
+            this.props.addCita(nuevaCita);      
+            
+            // reset form
+            this.setState({
+                ...initialState,             
+            
+            });
 
           }
 
@@ -61,16 +72,21 @@ class NuevaCita extends Component {
     }
     
     
-    
-    
-    
     render() {
+
+        const { error } = this.state;
+
         return (
             <div className="card mt-5 py-5">
                 <div className="card-body">
                     <h2 className="card-title text-center mb-5">
                         Llena el formulario para crear una nueva cita
                     </h2>
+
+                    { !error ? <div className="alert alert-danger nt-2 mb-5 text-center">
+                        Todos los campos son obligatorios
+                    </div> : null }
+
                     <form 
                         onSubmit={ this.handleSubmit }
                     >
@@ -84,8 +100,8 @@ class NuevaCita extends Component {
                                     className="form-control"
                                     placeholder="Nombre Mascota"
                                     name="mascota"
-                                    onChange={ this.handleChane }
-                                    value={ this.state.cita.nombre }
+                                    onChange={ this.handleChange }
+                                    value={ this.state.cita.mascota }
                                 />
                             </div>
                         </div>  {/* form-group */}
@@ -99,8 +115,8 @@ class NuevaCita extends Component {
                                     className="form-control"
                                     placeholder="Nombre Dueño Mascota"
                                     name="propietario"
-                                    onChange={ this.handleChane }
-                                    value={ this.state.cita.nombre }
+                                    onChange={ this.handleChange }
+                                    value={ this.state.cita.propietario }
                                 />
                             </div>
                         </div>  {/* form-group */}      
@@ -114,8 +130,8 @@ class NuevaCita extends Component {
                                     className="form-control"
                                     placeholder="Fecha"
                                     name="fecha"
-                                    onChange={ this.handleChane }
-                                    value={ this.state.cita.nombre }
+                                    onChange={ this.handleChange }
+                                    value={ this.state.cita.fecha }
                                 />
                             </div> 
                             <label className="col-sm-4 col-lg-2 col-form-label">
@@ -127,8 +143,8 @@ class NuevaCita extends Component {
                                     className="form-control"
                                     placeholder="Hora"
                                     name="hora"
-                                    onChange={ this.handleChane }
-                                    value={ this.state.cita.nombre }
+                                    onChange={ this.handleChange }
+                                    value={ this.state.cita.hora }
                                 />
                             </div>
                         </div>  {/* form-group */}  
@@ -141,8 +157,8 @@ class NuevaCita extends Component {
                                     className="form-control"
                                     name="sintomas"
                                     placeholder="Describe los síntomas"
-                                    onChange={ this.handleChane }
-                                    value={ this.state.cita.nombre }
+                                    onChange={ this.handleChange }
+                                    value={ this.state.cita.sintomas }
                                 ></textarea>
                             </div>
                         </div>  {/* form-group */}          
